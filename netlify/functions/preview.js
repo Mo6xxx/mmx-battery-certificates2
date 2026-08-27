@@ -5,7 +5,12 @@ function escapeHtml(s){
 }
 
 exports.handler = async (event) => {
-  const id = (event.queryStringParameters || {}).id;
+  // The id is parsed straight from the request path (e.g. /c/LCN7SZQZ),
+  // not from a query string — Netlify's :placeholder substitution into a
+  // redirect's query string is unreliable, so the netlify.toml rule just
+  // forwards the whole /c/* path here and we take the last segment.
+  const pathParts = (event.path || "").split("/").filter(Boolean);
+  const id = pathParts[pathParts.length - 1] || (event.queryStringParameters || {}).id;
 
   if(!id){
     return { statusCode: 400, headers: {"Content-Type": "text/plain"}, body: "Missing id" };
@@ -23,7 +28,6 @@ exports.handler = async (event) => {
   const appUrl = `https://${host}/#id=${encodeURIComponent(id)}`;
 
   if(!cert){
-    // Unknown id — still redirect, the app's own "not found" screen handles it.
     const html = `<!DOCTYPE html><html><head><meta charset="UTF-8">
 <title>MMX Battery Certificate</title>
 <meta http-equiv="refresh" content="0; url=${escapeHtml(appUrl)}">
