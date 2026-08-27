@@ -1,0 +1,10 @@
+[build]
+  publish = "."
+
+[functions]
+  directory = "netlify/functions"
+
+[[redirects]]
+  from = "/c/:id"
+  to = "/.netlify/functions/preview?id=:id"
+  status = 200
