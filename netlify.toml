@@ -5,6 +5,6 @@
   directory = "netlify/functions"
 
 [[redirects]]
-  from = "/c/:id"
-  to = "/.netlify/functions/preview?id=:id"
+  from = "/c/*"
+  to = "/.netlify/functions/preview/:splat"
   status = 200
